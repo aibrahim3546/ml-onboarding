@@ -1,12 +1,11 @@
 import React, { useEffect, useState } from 'react';
 import { useHistory } from 'react-router-dom';
 import styled from 'styled-components';
-import Cookies from 'js-cookie';
 
 import https from '../utils/https';
 import { ContainerDiv, CustomButtonDiv, PageTitleDiv } from '../components/style';
 import CustomCheckbox from '../components/CustomCheckbox';
-import { accountDetails } from '../utils/cookies';
+import { getAccountDetails, removeAccountDetails, setDropOffPage } from '../utils/cookies';
 
 const LabelDiv = styled.div`
   font-size: 12px;
@@ -53,13 +52,10 @@ const AgreementPage = () => {
   const [isAgreementTwo, setIsAgreementTwo] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
 
-  const savedDetails = accountDetails();
+  const savedDetails = getAccountDetails();
 
   useEffect(() => {
-    if (!savedDetails) {
-      history.replace('/welcome');
-    }
-
+    setDropOffPage('/agreement');
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -82,7 +78,7 @@ const AgreementPage = () => {
         setIsLoading(false);
 
         alert('Account successfully created!');
-        Cookies.remove('accountDetails');
+        removeAccountDetails();
         history.push('/welcome');
       }).catch((err) => {
         console.log('err => ', err);

@@ -3,6 +3,7 @@ import styled from 'styled-components';
 import { useHistory } from 'react-router-dom';
 
 import { CustomButtonDiv } from '../components/style';
+import { removeAccountDetails } from '../utils/cookies';
 
 const TitleDiv = styled.div`
 	font-size: 72px;
@@ -27,6 +28,7 @@ const WelcomePage = () => {
 	const history = useHistory();
 
 	const onClickApplyNow = () => {
+		removeAccountDetails();
 		history.push('/personal');
 	};
 

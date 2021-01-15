@@ -1,8 +1,9 @@
-import React from 'react';
-import { useLocation } from 'react-router-dom';
+import React, { useEffect } from 'react';
+import { useHistory, useLocation } from 'react-router-dom';
 import styled from 'styled-components';
 
 import { ReactComponent as LogoSvg } from '../assets/logo.svg';
+import { getAccountDetails } from '../utils/cookies';
 
 const ContainerDiv = styled.div`
   position: fixed;
@@ -39,13 +40,31 @@ const PROGRESS_STAGE = {
 
 const ProgressHeaderBar = () => {
   const location = useLocation();
+  const history = useHistory();
+  const savedDetails = getAccountDetails();
   const stage = PROGRESS_STAGE[location.pathname] || 0;
+
+  useEffect(() => {
+    if (savedDetails) {
+      history.replace('/');
+    } else {
+      history.replace('/welcome');
+    }
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+  
+
+  const onClickLogo = (e) => {
+    e.preventDefault();
+    history.push('/welcome');
+  }
 
   return (
     <>
       <ContainerDiv>
         <div style={{ padding: 20 }}>
-          <LogoSvg />
+          <LogoSvg onClick={onClickLogo} style={{ cursor: 'pointer' }} />
         </div>
         <ShadowLineDiv />
         <ProgressLineContainerDiv>

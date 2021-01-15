@@ -1,10 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import { useHistory } from 'react-router-dom';
-import Cookies from 'js-cookie';
 
-import { accountDetails } from '../utils/cookies';
 import CustomInput from '../components/CustomInput';
 import { ContainerDiv, CustomButtonDiv, PageTitleDiv, LabelDiv } from '../components/style';
+import { getAccountDetails, setAccountDetails, setDropOffPage } from '../utils/cookies';
 
 const validateDate = (date) => {
   var dateRegex = /^\d{2}\/\d{2}\/\d{4}$/ ;
@@ -15,20 +14,39 @@ const DobPage = () => {
   const history = useHistory();
   const [dob, setDob] = useState('');
 
-  const savedDetails = accountDetails();
+  const savedDetails = getAccountDetails();
 
   useEffect(() => {
-    if (savedDetails) {
+    if (isSavedDetails()) {
       setDob(savedDetails.dob || '');
     } else {
       history.replace('/welcome');
     }
 
+    setDropOffPage('/dob');
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
+  const isSavedDetails = () => {
+    if (!savedDetails) {
+      return false;
+    }
+
+    let isDataEmpty = false;
+
+    Object.keys(savedDetails).forEach((key) => {
+      if (savedDetails[key] === '' && key !== 'dob') {
+        isDataEmpty = true;
+      }
+    });
+
+    return !isDataEmpty;
+  }
+
   const onChangeDob = (e) => {
     setDob(e.target.value);
+    savedDetails.dob = e.target.value;
+    setAccountDetails(JSON.stringify(savedDetails));
   }
 
   const onClickContinue = () => {
@@ -43,7 +61,7 @@ const DobPage = () => {
     }
 
     savedDetails.dob = dob;
-    Cookies.set('accountDetails', JSON.stringify(savedDetails));
+    setAccountDetails(JSON.stringify(savedDetails));
     history.push('/agreement');
   }
 
