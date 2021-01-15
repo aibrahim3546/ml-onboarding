@@ -59,7 +59,7 @@ const AgreementPage = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  const onClickAgree = () => {
+  const onClickAgree = async () => {
     if (isLoading) {
       return null;
     }
@@ -67,22 +67,25 @@ const AgreementPage = () => {
     if (isAgreementTwo) {
       setIsLoading(true);
 
-      https.post(
-        'https://5f79819fe402340016f93139.mockapi.io/api/user',
-        {
-          ...savedDetails,
-          agreement1: isAgreementOne,
-          agreement2: isAgreementTwo,
-        }
-      ).then((data) => {
-        setIsLoading(false);
+      try {
+        const response = await https.post(
+          'https://5f79819fe402340016f93139.mockapi.io/api/user',
+          {
+            ...savedDetails,
+            agreement1: isAgreementOne,
+            agreement2: isAgreementTwo,
+          }
+        );
 
+        console.log('response => ', response);
+        setIsLoading(false);
         alert('Account successfully created!');
         removeAccountDetails();
         history.push('/welcome');
-      }).catch((err) => {
+      } catch (err) {
+        setIsLoading(false);
         console.log('err => ', err);
-      });
+      };
     } else {
       alert('Please agree to all the agreements!');
     }

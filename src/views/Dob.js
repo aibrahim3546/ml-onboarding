@@ -27,6 +27,7 @@ const DobPage = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
+  // checking to prevent user directly enter this page via url
   const isSavedDetails = () => {
     if (!savedDetails) {
       return false;
